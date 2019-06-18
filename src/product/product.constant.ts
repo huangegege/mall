@@ -1,0 +1,5 @@
+export enum PRODUCT_STATUS {
+  OFF_SHELF,
+  ON_SHELF,
+  DELETED
+}
