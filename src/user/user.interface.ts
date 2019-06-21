@@ -1,9 +1,5 @@
-export interface UserData {
+export interface UserRO {
   username: string;
   email: string;
   token: string;
-}
-
-export interface UserRO {
-  user: UserData;
 }

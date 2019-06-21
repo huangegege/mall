@@ -123,8 +123,7 @@ export class ProductService {
         // 没有该分类，并且没有关键字，这个时候返回一个空的结果集，不报错
         return new ProductDetailListVo([], pageNum, pageSize, 0);
       } else if (category) {
-        const { categoryIds } = await this.categorySerice.selectCategoryAndChildrenById(category.id);
-        categoryIdList = categoryIds;
+        categoryIdList = await this.categorySerice.selectCategoryAndChildrenById(category.id);
       }
     }
 

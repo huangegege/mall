@@ -23,7 +23,7 @@ export class UserController {
 
   @UsePipes(new ValidationPipe())
   @Post('users')
-  async create(@Body('user') userData: CreateUserDto) {
+  async create(@Body() userData: CreateUserDto) {
     return this.userService.create(userData);
   }
 
@@ -34,7 +34,7 @@ export class UserController {
 
   @UsePipes(new ValidationPipe())
   @Post('users/login')
-  async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
     const userData = await this.userService.findOne(loginUserDto);
 
     if (!userData) {
@@ -43,13 +43,12 @@ export class UserController {
 
     const token = await this.userService.generateJWT(userData);
     const { email, username } = userData;
-    const user = { email, token, username };
-    return { user };
+    return { email, token, username };
   }
 
   @UsePipes(new ValidationPipe())
   @Post('users/mp/login')
-  async mpLogin(@Body('user') mpLoginUserDto: MpLoginUserDto): Promise<UserRO> {
+  async mpLogin(@Body() mpLoginUserDto: MpLoginUserDto): Promise<UserRO> {
     return await this.userService.findByCode(mpLoginUserDto.code);
   }
 }

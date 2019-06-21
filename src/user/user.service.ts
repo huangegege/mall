@@ -27,9 +27,9 @@ export class UserService {
   }
 
   async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
-    this.loggerService.debug('find one ' + loginUserDto.email);
+    this.loggerService.debug('find one ' + loginUserDto.username);
     const findOneOptions = {
-      email: loginUserDto.email,
+      username: loginUserDto.username,
       password: crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
     };
 
@@ -38,7 +38,7 @@ export class UserService {
 
   async create(dto: CreateUserDto): Promise<UserRO> {
     // check uniqueness of username/email
-    const { username, email, password } = dto;
+    const { username, email, password, phone } = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
@@ -55,6 +55,7 @@ export class UserService {
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
+    newUser.phone = phone;
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
@@ -131,12 +132,10 @@ export class UserService {
   }
 
   public buildUserRO(user: UserEntity) {
-    const userRO = {
+    return {
       username: user.username,
       email: user.email,
       token: this.generateJWT(user)
     };
-
-    return { user: userRO };
   }
 }
