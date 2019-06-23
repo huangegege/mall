@@ -70,7 +70,7 @@ export class ProductService {
     if (!product) {
       throw new ProductNotFoundException();
     }
-    if (product.status !== PRODUCT_STATUS.ON_SHELF) {
+    if (product.status !== PRODUCT_STATUS.ON_SALE) {
       throw new ProductNotSaleException();
     }
     return await this.assembleProductDetailVo(product);
@@ -112,9 +112,9 @@ export class ProductService {
 
   async getProductByKeywordCategory(keyword: string, categoryId: number, pageNum: number, pageSize: number,
                                     orderBy: string): Promise<ProductDetailListVo> {
-    if (keyword === '' && categoryId === null) {
-      throw new ParameterException();
-    }
+    // if (keyword === '' && categoryId === null) {
+    //   throw new ParameterException();
+    // }
 
     let categoryIdList = [];
     if (categoryId !== null) {

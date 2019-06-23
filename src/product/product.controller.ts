@@ -53,13 +53,19 @@ export class ProductController {
     return await this.productService.getDetail(id);
   }
 
-  @Get('search/full/:keyword/:categoryId')
+  @Get('search')
   async list(
-    @Param('keyword') keyword: string,
-    @Param('categoryId') categoryId: number,
+    @Query('keyword') keyword: string,
+    @Query('categoryId') categoryId: number,
     @Pagination() pagination: PaginationDto,
     @Query('orderBy') orderBy: string
   ) {
+    if (keyword === undefined) {
+      keyword = '';
+    }
+    if (categoryId === undefined) {
+      categoryId = null;
+    }
     return await this.productService.getProductByKeywordCategory(keyword, categoryId,
       pagination.pageNum, pagination.pageSize, orderBy);
   }

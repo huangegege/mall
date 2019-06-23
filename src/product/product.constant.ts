@@ -1,5 +1,4 @@
 export enum PRODUCT_STATUS {
-  OFF_SHELF,
-  ON_SHELF,
-  DELETED
+  ON_SALE = 1,
+  OFF_SHELF = 2
 }
