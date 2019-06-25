@@ -1,3 +1,4 @@
+import { UploadVo } from './vo/upload.vo';
 import { CategoryService } from '../category/category.service';
 import { ParameterException } from '../core/exception/common.exception';
 import { PRODUCT_STATUS } from './product.constant';
@@ -11,7 +12,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductDetailVo, ProductDetailListVo } from './vo/product-detail.vo';
-import { ftp } from '../config';
+import { fileServer } from '../config';
+import { createWriteStream } from 'fs';
+import { join } from 'path';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class ProductService {
@@ -26,6 +30,14 @@ export class ProductService {
   async create(productData: CreateProductDto): Promise<ProductEntity> {
     let productEntity = new ProductEntity();
     productEntity = Object.assign(productEntity, productData);
+    const subImages = productData.subImages.split(',');
+    if (subImages.length > 0) {
+      productEntity.mainImage = subImages[0];
+    } else {
+      throw new ParameterException({
+        message: '请至少上传一张图片'
+      });
+    }
     return await this.productRepository.save(productEntity);
   }
 
@@ -56,7 +68,7 @@ export class ProductService {
   }
 
   private async assembleProductDetailVo(product: ProductEntity): Promise<ProductDetailVo> {
-    const imageHost = ftp.serverHttpPrefix;
+    const imageHost = fileServer.urlPrefix;
     const category = await this.categoryRepository.findOne(product.categoryId);
     let parentCategoryId = 0;
     if (category) {
@@ -146,7 +158,7 @@ export class ProductService {
         qb.orderBy(`product.${orderByArray[0]}`, order);
       }
     } else {
-      qb.orderBy('product.price', 'ASC');
+      qb.orderBy('product.createTime', 'DESC');
     }
 
     const [ productList, total ] = await qb
@@ -160,5 +172,23 @@ export class ProductService {
       productDetailVos.push(productDetailVo);
     }
     return new ProductDetailListVo(productDetailVos, pageNum, pageSize, total);
+  }
+
+  async uploadFile(file: any): Promise<UploadVo> {
+    const fileName = file.originalname;
+    const fileExtensionName = fileName.substring(fileName.lastIndexOf('.') + 1);
+    const uploadFileName = v4() + '.' + fileExtensionName;
+    const writeFile = createWriteStream(join(__dirname, '../..', 'upload', uploadFileName));
+    await new Promise((resolve, reject) => {
+      writeFile.write(file.buffer, (err) => {
+        if (!err) {
+          resolve();
+        } else {
+          reject();
+        }
+      });
+    });
+    const url = fileServer.urlPrefix + uploadFileName;
+    return { uri: uploadFileName, url };
   }
 }

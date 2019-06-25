@@ -6,9 +6,9 @@ export const wx = {
   loginUrl: 'https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code'
 };
 
-export const ftp = {
-  serverIp: '127.0.0.1',
+export const fileServer = {
+  ip: '127.0.0.1',
   user: 'ftpuser',
   pass: 'a1234567',
-  serverHttpPrefix: 'http://img.huanliu.org/'
+  urlPrefix: 'http://localhost:3000/'
 };

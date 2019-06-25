@@ -4,8 +4,9 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ValidationPipe } from '../core/validation/validation.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
-import { Controller, Get, Post, Put, Body, UsePipes, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, UsePipes, Param, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { Pagination } from '../core/pagination/pagination.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
@@ -88,5 +89,11 @@ export class ProductController {
   ) {
     return await this.productService.getProductByKeywordCategory('', categoryId,
       pagination.pageNum, pagination.pageSize, orderBy);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: any)  {
+    return await this.productService.uploadFile(file);
   }
 }
