@@ -10,5 +10,5 @@ export const fileServer = {
   ip: '127.0.0.1',
   user: 'ftpuser',
   pass: 'a1234567',
-  urlPrefix: 'http://localhost:3000/'
+  urlPrefix: 'http://localhost:3000/static/upload/'
 };

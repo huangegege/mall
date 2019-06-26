@@ -178,7 +178,7 @@ export class ProductService {
     const fileName = file.originalname;
     const fileExtensionName = fileName.substring(fileName.lastIndexOf('.') + 1);
     const uploadFileName = v4() + '.' + fileExtensionName;
-    const writeFile = createWriteStream(join(__dirname, '../..', 'upload', uploadFileName));
+    const writeFile = createWriteStream(join(__dirname, '../../public', 'upload', uploadFileName));
     await new Promise((resolve, reject) => {
       writeFile.write(file.buffer, (err) => {
         if (!err) {
