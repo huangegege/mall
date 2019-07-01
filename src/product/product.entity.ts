@@ -21,7 +21,7 @@ export class ProductEntity {
   @Column({default: ''})
   subImages: string;
 
-  @Column({default: ''})
+  @Column('text')
   detail: string;
 
   @Column()
